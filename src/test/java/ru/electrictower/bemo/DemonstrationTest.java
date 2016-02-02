@@ -10,11 +10,13 @@ import org.testng.annotations.Test;
 public class DemonstrationTest {
 
     @Test
-    public void firstTest() {
-        Bemo bemo = new Bemo();
-        WebDriver webDriver = new FirefoxDriver(bemo.getFirefoxProfile());
+    public void test() {
+        WebDriver webDriver = new FirefoxDriver();
+        BeMo beMo = new BeMo(webDriver);
         webDriver.get("https://ru.wargaming.net/registration/ru/");
-        bemo.inject(webDriver);
+        beMo.inject();
+        beMo.enable();
+        beMo.disable();
         webDriver.quit();
     }
 

@@ -5,63 +5,47 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
 
 import java.io.StringWriter;
-import java.util.Properties;
+
+import static ru.electrictower.bemo.Constants.Velocity.*;
+import static ru.electrictower.bemo.Constants.*;
 
 /**
  * Created by v1_wizard.
  */
-public class Bemo {
+public class BeMo {
     private JavascriptExecutor jsExecutor;
-    private VelocityEngine velocityEngine;
-    private VelocityContext velocityContext;
+    private VelocityEngine velocityEngine = new VelocityEngine();
+    private VelocityContext velocityContext = new VelocityContext();
 
-    private static final String INJECT_MOCK_TEMPLATE = "inject_mock.vm";
-
-    public Bemo() {
-        initVelocityEngineAndContext();
+    public BeMo(WebDriver webDriver, String xHookUrl) {
+        jsExecutor = (JavascriptExecutor) webDriver;
+        velocityEngine.init(VELOCITY_PROPERTIES);
+        velocityContext.put(URL_TO_JS_MOCK, xHookUrl);
     }
 
-    private void initVelocityEngineAndContext() {
-        this.velocityEngine = new VelocityEngine();
-        this.velocityContext = new VelocityContext();
-        Properties properties = new Properties();
-        properties.setProperty("resource.loader", "file");
-        properties.setProperty(
-                "file.resource.loader.class",
-                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"
-        );
-        velocityEngine.init(properties);
-        velocityContext.put("url_to_mock", "https://jpillora.com/xhook/dist/xhook.js");
+    public BeMo(WebDriver webDriver) {
+        this(webDriver, DEFAULT_X_HOOK_URL);
     }
 
-    public void inject(WebDriver webDriver) {
-        this.jsExecutor = (JavascriptExecutor) webDriver;
-
+    public void inject() {
         Template t = velocityEngine.getTemplate(INJECT_MOCK_TEMPLATE);
         StringWriter writer = new StringWriter();
         t.merge(velocityContext, writer);
         jsExecutor.executeScript(writer.toString());
     }
 
-    public FirefoxProfile getFirefoxProfile() {
-        FirefoxProfile firefoxProfile = new FirefoxProfile();
-        firefoxProfile.setPreference("security.mixed_content.block_active_content", false);
-        firefoxProfile.setPreference("security.mixed_content.block_display_content", true);
-        return firefoxProfile;
-    }
-
     public void enable() {
-        // TODO
+        jsExecutor.executeScript(JS_ENABLE_X_HOOK);
     }
 
     public void disable() {
-        // TODO
+        jsExecutor.executeScript(JS_DISABLE_X_HOOK);
     }
 
-    public void mock(Action action) {
+    public Mock mockFor(String url) {
         // TODO
+        return new Mock();
     }
 }
