@@ -14,18 +14,18 @@ import static ru.electrictower.bemo.Constants.*;
 /**
  * Created by v1_wizard.
  */
-public class BeMo {
+public class Bemo {
     private JavascriptExecutor jsExecutor;
     private VelocityEngine velocityEngine = new VelocityEngine();
     private VelocityContext velocityContext = new VelocityContext();
 
-    public BeMo(WebDriver webDriver, String xHookUrl) {
+    public Bemo(WebDriver webDriver, String xHookUrl) {
         jsExecutor = (JavascriptExecutor) webDriver;
         velocityEngine.init(VELOCITY_PROPERTIES);
         velocityContext.put(URL_TO_JS_MOCK, xHookUrl);
     }
 
-    public BeMo(WebDriver webDriver) {
+    public Bemo(WebDriver webDriver) {
         this(webDriver, DEFAULT_X_HOOK_URL);
     }
 

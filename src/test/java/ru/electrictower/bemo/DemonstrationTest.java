@@ -12,11 +12,11 @@ public class DemonstrationTest {
     @Test
     public void test() {
         WebDriver webDriver = new FirefoxDriver();
-        BeMo beMo = new BeMo(webDriver);
+        Bemo bemo = new Bemo(webDriver);
         webDriver.get("https://ru.wargaming.net/registration/ru/");
-        beMo.inject();
-        beMo.enable();
-        beMo.disable();
+        bemo.inject();
+        bemo.enable();
+        bemo.disable();
         webDriver.quit();
     }
 
