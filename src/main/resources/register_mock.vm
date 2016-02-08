@@ -10,7 +10,7 @@ xhook.before(function(req) {
     response.status = 200;
     response.statusText = "OK";
     response.type = "default";
-    response.url = "";
+    response.url = req.url;
     return response;
 	}
 });

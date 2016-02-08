@@ -11,8 +11,8 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ru.electrictower.bemo.Constants.*;
-import static ru.electrictower.bemo.Constants.Velocity.*;
+import static ru.electrictower.bemo.BeMoConstants.*;
+import static ru.electrictower.bemo.BeMoConstants.Velocity.*;
 
 /**
  * Created by v1_wizard.

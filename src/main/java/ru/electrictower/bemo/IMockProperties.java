@@ -11,7 +11,7 @@ public interface IMockProperties {
 
     IMockProperties setStatus(int status);
 
-    IMockProperties setBody(Object object);
+    IMockProperties setBody(String body);
 
     IMockProperties setType(String type);
 }
