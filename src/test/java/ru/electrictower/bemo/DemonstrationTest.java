@@ -1,8 +1,13 @@
 package ru.electrictower.bemo;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.By;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
+import static junit.framework.Assert.assertEquals;
 
 /**
  * Created by v1_wizard.
@@ -10,32 +15,42 @@ import org.testng.annotations.Test;
 public class DemonstrationTest {
 
     public final String GOOGLE_SIGN_UP_URL = "https://accounts.google.com/SignUp";
+    private BeMo beMo;
+    private String urlPattern = "InputValidator";
+    private String body = "{\n" +
+            "\"input01\":{\n" +
+            "\t\t\t\"Valid\":\"false\",\n" +
+            "\t\t\t\"ErrorMessage\":\"Hello selenium camp 2016.\",\n" +
+            "\t\t\t\"Errors\":{\"GmailAddress\":\"Hello selenium camp 2016.\"},\n" +
+            "\"ErrorData\":[]\n" +
+            "},\n" +
+            "\"Locale\":\"ru\"\n" +
+            "}";
 
-    @Test
-    public void test() {
-        WebDriver webDriver = new FirefoxDriver();
-        BeMo beMo = new BeMo(webDriver);
-        webDriver.get(GOOGLE_SIGN_UP_URL);
-        beMo.inject();
-        beMo.enable();
-
-//        beMo.mockFor("/acc/")
-//                .customResponse()
-//                .setBody("test")
-//                .setHeaders(null)
-//                .setStatus(0)
-//                .setType(null)
-//                .delay(1000);
-//
-//        beMo.mountAll();
-
-        webDriver.quit();
+    @BeforeTest
+    public void setUp(){
+        beMo = new BeMo(getWebDriver());
+        beMo.mockFor(urlPattern)
+                .with()
+                .body(body)
+                .status(200);
     }
 
     @Test
-    public void debugTest(){
-        MockImpl mock = new MockImpl();
-        mock.setStatus(409);
-    }
+    public void testMockGoogleRegistration() {
+        open(GOOGLE_SIGN_UP_URL);
+        beMo.inject().enable();
 
+        assertEquals(0, beMo.getCallCountFor(urlPattern));
+
+        $(By.name("GmailAddress")).setValue("aliaksei.boole");
+        $(By.name("submitbutton")).click();
+
+        assertEquals(1, beMo.getCallCountFor(urlPattern));
+
+        $(By.name("GmailAddress")).setValue("aliaksei.bul");
+        $(By.name("RecoveryEmailAddress")).click();
+
+        assertEquals(2, beMo.getCallCountFor(urlPattern));
+    }
 }

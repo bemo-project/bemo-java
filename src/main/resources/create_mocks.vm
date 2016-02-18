@@ -1,0 +1,16 @@
+#foreach ($url_to_match in $mocks.keySet())
+    document.$mocks[$url_to_match].Id = 0;
+
+    xhook.before(function(req) {
+      if(req.url.match(/$url_to_match/)){
+        document.$mocks[$url_to_match].Id++;
+
+        var response = new Response();
+        response.status = $mocks[$url_to_match].FakeResponse.Status;
+        response.statusText = '$mocks[$url_to_match].FakeResponse.StatusText';
+        response.text = '$mocks[$url_to_match].FakeResponse.Body';
+
+        return response;
+        }
+    });
+#end
