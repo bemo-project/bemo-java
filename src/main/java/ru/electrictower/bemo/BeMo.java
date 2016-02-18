@@ -56,10 +56,10 @@ public class BeMo {
     }
 
     public void enable() {
-        jsExecutor.executeScript(JS_ENABLE_X_HOOK);
         StringWriter writer = new StringWriter();
         create_mocks_on_page_template.merge(velocityContext, writer);
         jsExecutor.executeScript(writer.toString());
+        jsExecutor.executeScript(JS_ENABLE_X_HOOK);
     }
 
     public void disable() {
