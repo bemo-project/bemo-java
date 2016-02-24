@@ -12,10 +12,10 @@ import java.io.IOException;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 import static org.apache.http.entity.ContentType.APPLICATION_JSON;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static ru.electrictower.bemo.demonstration.helpers.Helpers.makeBeMo;
 import static ru.electrictower.bemo.demonstration.locators.GoogleRegistrationPage.*;
 
 /**
@@ -33,7 +33,7 @@ public class DemonstrationTest {
 
         GoogleValidatorResponse gVResponse = new GoogleValidatorResponse();
 
-        BeMo beMo = makeBeMo();
+        BeMo beMo = new BeMo(getWebDriver());
         beMo.mockFor(VALIDATOR_URL_PART)
                 .with()
                 .body(gson.toJson(gVResponse))
@@ -55,7 +55,7 @@ public class DemonstrationTest {
         GoogleValidatorResponse gVResponse = new GoogleValidatorResponse();
         gVResponse.input01.ErrorData = new String[]{"gogi_gruzinidze"};
 
-        BeMo beMo = makeBeMo();
+        BeMo beMo = new BeMo(getWebDriver());
         beMo.mockFor(VALIDATOR_URL_PART)
                 .with()
                 .body(gson.toJson(gVResponse))

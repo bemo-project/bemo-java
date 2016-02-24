@@ -6,3 +6,10 @@ script.src = "$url_to_mock";
 
 document.getElementsByTagName('head')[0].appendChild(script);
 
+function waitXhookSetup(){
+    if (typeof xhook === "undefined") {
+        setTimeout(waitXhookSetup, 30);
+    }
+}
+
+waitXhookSetup();

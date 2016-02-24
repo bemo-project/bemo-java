@@ -65,6 +65,7 @@ public class BeMo {
     public void disable() {
         jsExecutor.executeScript(JS_DESTROY_ALL_MOCKS);
         jsExecutor.executeScript(JS_DISABLE_X_HOOK);
+        mocks.clear();
     }
 
     public IResponseSolver mockFor(String url) {
