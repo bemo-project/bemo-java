@@ -68,7 +68,7 @@ public class BeMo {
         mocks.clear();
     }
 
-    public IResponseSolver mockFor(String url) {
+    public IMockBuilder mockFor(String url) {
         Mock mock = new Mock();
         mocks.put(StringEscapeUtils.escapeJavaScript(url), mock);
         return mock;

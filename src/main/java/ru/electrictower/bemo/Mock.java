@@ -1,6 +1,8 @@
 package ru.electrictower.bemo;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static ru.electrictower.bemo.BeMoConstants.Ajax.statusTextMap;
@@ -8,7 +10,7 @@ import static ru.electrictower.bemo.BeMoConstants.Ajax.statusTextMap;
 /**
  * Created by v1_wizard.
  */
-public class Mock implements IResponseSolver, IResponseBuilder {
+public class Mock implements IMockBuilder, IResponseBuilder {
     private String id = RandomStringUtils.random(10, true, false);
     private FakeResponse fakeResponse = null;
 
@@ -19,13 +21,12 @@ public class Mock implements IResponseSolver, IResponseBuilder {
         return fakeResponse;
     }
 
-    public IResponseBuilder with(FakeResponse fakeResponse) {
-        this.fakeResponse = fakeResponse;
+    public IResponseBuilder with() {
         return this;
     }
 
-    public IResponseBuilder with() {
-        return this;
+    public IResponseBuilder withDelay(int seconds) {
+        throw new NotImplementedException("Coming soon...");
     }
 
     public IResponseBuilder status(int status) {
@@ -40,7 +41,7 @@ public class Mock implements IResponseSolver, IResponseBuilder {
 
     public IResponseBuilder body(String body) {
         checkNotNull(body);
-        String preparedBody = body.replaceAll("(\\r|\\n|\\t)", "").replaceAll("\'", "\"");
+        String preparedBody = StringEscapeUtils.escapeJavaScript(body);
         getFakeResponse().setBody(preparedBody);
         return this;
     }
