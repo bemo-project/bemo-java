@@ -1,15 +1,7 @@
 var script = document.createElement("script");
 
 script.type = "text/javascript";
-script.async = true;
+script.async = false;
 script.src = "$url_to_mock";
 
 document.getElementsByTagName('head')[0].appendChild(script);
-
-function waitXhookSetup(){
-    if (typeof xhook === "undefined") {
-        setTimeout(waitXhookSetup, 30);
-    }
-}
-
-waitXhookSetup();
