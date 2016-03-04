@@ -52,21 +52,21 @@ public int getCallCountFor(String url)
 ### Mock Builder API
 - Constract your mock:
 ```java
-IResponseBuilder with()
+public IResponseBuilder with()
 ```
 - Constract your mock with delay (use when you want simulate long request execution):
 ```java
-IResponseBuilder withDelay(int seconds); // throw new NotImplementedException("Coming soon...");
+public IResponseBuilder withDelay(int seconds); // throw new NotImplementedException("Coming soon...");
 ```
 
 ### Response Builder API
 - Set fake response http status to mock:
 ```java
-IResponseBuilder status(int status);
+public IResponseBuilder status(int status);
 ```
 - Set fake response http body to mock:
 ```java
-IResponseBuilder body(String body);
+public IResponseBuilder body(String body);
 ```
 
 #Tech
