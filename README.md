@@ -28,7 +28,7 @@ Bemo(back-end mock) - it's simple way to mock your back-end from webdriver UI te
 ```
 
 ### Main Bemo API
-- Setup [xhook][dill] on page:
+- Setup [xhook](https://github.com/jpillora/xhook) on page:
 ```java
 public BeMo inject()
 ```
