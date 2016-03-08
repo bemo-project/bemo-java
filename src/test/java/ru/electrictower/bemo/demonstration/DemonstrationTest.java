@@ -3,6 +3,7 @@ package ru.electrictower.bemo.demonstration;
 import com.google.gson.Gson;
 import org.apache.http.client.fluent.Request;
 import org.testng.annotations.Test;
+import ru.electrictower.bemo.AjaxRequest;
 import ru.electrictower.bemo.BeMo;
 import ru.electrictower.bemo.demonstration.contract.GoogleValidatorRequest;
 import ru.electrictower.bemo.demonstration.contract.GoogleValidatorResponse;
@@ -43,14 +44,13 @@ public class DemonstrationTest {
         $(GMAIL_ADDRESS_INPUT).setValue("aliaksei.boole");
         $(SUBMIT_BUTTON).click();
 
-        $(ERROR_MESSAGE).shouldHave(text("Welcome to selenium camp 2016."));
+        $(ERROR_MESSAGE).shouldHave(text("It's work."));
         assertEquals(1, beMo.getCallCountFor(VALIDATOR_URL_PART));
     }
 
     @Test
     public void testAddressHintForGoogleRegistration() {
         open(GOOGLE_SIGN_UP_URL);
-
 
         GoogleValidatorResponse gVResponse = new GoogleValidatorResponse();
         gVResponse.input01.ErrorData = new String[]{"gogi_gruzinidze"};
@@ -67,6 +67,28 @@ public class DemonstrationTest {
 
         $(HINT_NICKNAME_MESSAGE).shouldHave(text("gogi_gruzinidze"));
         assertEquals(1, beMo.getCallCountFor(VALIDATOR_URL_PART));
+    }
+
+    @Test
+    public void testVerifyAjaxRequest(){
+        open(GOOGLE_SIGN_UP_URL);
+
+        GoogleValidatorResponse gVResponse = new GoogleValidatorResponse();
+
+        BeMo beMo = new BeMo(getWebDriver());
+        beMo.mockFor(VALIDATOR_URL_PART)
+                .with()
+                .body(gson.toJson(gVResponse))
+                .status(200);
+        beMo.inject().enable();
+
+        $(GMAIL_ADDRESS_INPUT).setValue("aliaksei.boole");
+        $(SUBMIT_BUTTON).click();
+
+        AjaxRequest ajaxReq = beMo.getRequestFor(VALIDATOR_URL_PART);
+        GoogleValidatorRequest gVRequest = gson.fromJson(ajaxReq.body, GoogleValidatorRequest.class);
+        assertTrue(gVRequest.input01.containsValue("aliaksei.boole"));
+        assertEquals(ajaxReq.url, "InputValidator?resource=SignUp");
     }
 
     @Test

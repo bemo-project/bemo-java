@@ -33,6 +33,7 @@ class BeMoConstants {
         public static final String INJECT_MOCK_TEMPLATE = "inject_mock.vm";
         public static final String CREATE_MOCKS_ON_PAGE_TEMPLATE = "create_mocks.vm";
         public static final String GET_CALL_COUNT_TEMPLATE = "get_call_count.vm";
+        public static final String GET_AJAX_REQUEST_TEMPLATE = "get_ajax_request.vm";
 
         //Variables
         public static final String URL_TO_JS_MOCK = "url_to_mock";

@@ -1,9 +1,11 @@
 #foreach ($url_to_match in $mocks.keySet())
-    document.$mocks[$url_to_match].Id = 0;
+    document.${mocks[$url_to_match].Id} = new Object();
+    document.${mocks[$url_to_match].Id}.Id = 0;
 
     xhook.before(function(req) {
           if(req.url.match(/$url_to_match/)){
-            document.$mocks[$url_to_match].Id++;
+            document.${mocks[$url_to_match].Id}.Id++;
+            document.${mocks[$url_to_match].Id}.req = req;
 
             var response = new Response();
             response.status = $mocks[$url_to_match].FakeResponse.Status;

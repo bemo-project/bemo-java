@@ -40,21 +40,25 @@ public void enable()
 ```java
 public void disable()
 ```
-- Constract mock for url pattern:
+- Construct mock for url pattern:
 ```java
-public IMockBuilder mockFor(String url)
+public IMockBuilder mockFor(String urlPart)
 ```
 - Get count of mock calls for url pattern:
 ```java
-public int getCallCountFor(String url)
+public int getCallCountFor(String urlPart)
+```
+- Get last ajax request for url pattern (**NEW!**):
+```java
+public AjaxRequest getRequestFor(String urlPart)
 ```
 
 ### Mock Builder API
-- Constract your mock:
+- Construct your mock:
 ```java
 public IResponseBuilder with()
 ```
-- Constract your mock with delay (use when you want simulate long request execution):
+- Construct your mock with delay (use when you want simulate long request execution):
 ```java
 public IResponseBuilder withDelay(int seconds); // throw new NotImplementedException("Coming soon...");
 ```
@@ -69,10 +73,10 @@ public IResponseBuilder status(int status);
 public IResponseBuilder body(String body);
 ```
 
-#Tech
+# Tech
 Bemo use [xhook](https://github.com/jpillora/xhook) to work. 
 
-#Contributing
+# Contributing
 Fill free to contribute!
 
 License

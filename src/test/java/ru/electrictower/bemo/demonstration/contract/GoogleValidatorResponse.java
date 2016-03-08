@@ -12,12 +12,12 @@ public class GoogleValidatorResponse {
 
     public class Input01 {
         public String Valid = "false";
-        public String ErrorMessage = "Welcome to Hell 2016.";
+        public String ErrorMessage = "Error!";
         public Map<String, String> Errors = new HashMap<String, String>();
         public String[] ErrorData = new String[0];
 
         {
-            Errors.put("GmailAddress", "Welcome to selenium camp 2016.");
+            Errors.put("GmailAddress", "It's work.");
         }
     }
 }

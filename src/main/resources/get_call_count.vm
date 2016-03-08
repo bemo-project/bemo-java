@@ -1,1 +1,1 @@
-return document.$mock.Id;
+return document.${mock.Id}.Id;
