@@ -1,2 +1,0 @@
-var ajaxRequest = document.${mock.Id}.req;
-return [ajaxRequest.url, ajaxRequest.body];

@@ -1,98 +1,48 @@
 package ru.electrictower.bemo;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
-import java.io.StringWriter;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import static ru.electrictower.bemo.BeMoConstants.*;
-import static ru.electrictower.bemo.BeMoConstants.Velocity.*;
 
 /**
- * Created by v1_wizard.
+ * Created by v1-wizard on 30.4.16.
  */
 public class BeMo {
+    public final static String DEFAULT_X_HOOK_URL = "https://jpillora.com/xhook/dist/xhook.js";
+
     private JavascriptExecutor jsExecutor;
+    private String xHookUrl;
+    private List<AbstractHandler> handlers = new ArrayList<AbstractHandler>();
 
-    private Map<String, Mock> mocks = new HashMap<String, Mock>();
-
-    private VelocityContext velocityContext = new VelocityContext();
-    private Template injectMockTemplate = null;
-    private Template createMocksOnPageTemplate = null;
-    private Template getCallCountTemplate = null;
-    private Template getAjaxRequestTemplate = null;
-
-    public BeMo(WebDriver webDriver, String xHookUrl) {
-        jsExecutor = (JavascriptExecutor) webDriver;
-
-        initVelocity(xHookUrl);
+    private BeMo(WebDriver webDriver, String xHookUrl) {
+        this.xHookUrl = xHookUrl;
+        this.jsExecutor = (JavascriptExecutor) webDriver;
     }
 
-    private void initVelocity(String xHookUrl) {
-        VelocityEngine velocityEngine = new VelocityEngine();
-        velocityEngine.init(VELOCITY_PROPERTIES);
-        velocityContext.put(URL_TO_JS_MOCK, xHookUrl);
-        velocityContext.put(MOCKS_IN_TEMPLATE, mocks);
-
-        injectMockTemplate = velocityEngine.getTemplate(INJECT_MOCK_TEMPLATE);
-        createMocksOnPageTemplate = velocityEngine.getTemplate(CREATE_MOCKS_ON_PAGE_TEMPLATE);
-        getCallCountTemplate = velocityEngine.getTemplate(GET_CALL_COUNT_TEMPLATE);
-        getAjaxRequestTemplate = velocityEngine.getTemplate(GET_AJAX_REQUEST_TEMPLATE);
+    public static BeMo sessionWith(WebDriver webDriver) {
+        return new BeMo(webDriver, DEFAULT_X_HOOK_URL);
     }
 
-    public BeMo(WebDriver webDriver) {
-        this(webDriver, DEFAULT_X_HOOK_URL);
+    public static BeMo sessionWith(WebDriver webDriver, String xHookUrl) {
+        return new BeMo(webDriver, xHookUrl);
     }
 
-    public BeMo inject() {
-        StringWriter writer = new StringWriter();
-        injectMockTemplate.merge(velocityContext, writer);
-        jsExecutor.executeScript(writer.toString());
-        return this;
+    public void addHandler(AbstractHandler handler) {
+        handler.setJsExecutor(jsExecutor);
+        handlers.add(handler);
     }
 
-    public void enable() {
-        StringWriter writer = new StringWriter();
-        createMocksOnPageTemplate.merge(velocityContext, writer);
-        jsExecutor.executeScript(writer.toString());
-        jsExecutor.executeScript(JS_ENABLE_X_HOOK);
+    public void inject() {
+        String initJson = JsonMaker.initJson(xHookUrl);
+        jsExecutor.executeScript(JsMaker.initializeJs(initJson));
+        String handlersJson = JsonMaker.handlersJson(handlers);
+        jsExecutor.executeScript(JsMaker.handlersJs(handlersJson));
+        jsExecutor.executeScript(JsMaker.enableJs());
     }
 
-    public void disable() {
-        jsExecutor.executeScript(JS_DESTROY_ALL_MOCKS);
-        jsExecutor.executeScript(JS_DISABLE_X_HOOK);
-        mocks.clear();
-    }
-
-    public IMockBuilder mockFor(String urlPart) {
-        Mock mock = new Mock();
-        mocks.put(StringEscapeUtils.escapeJavaScript(urlPart), mock);
-        return mock;
-    }
-
-    public int getCallCountFor(String urlPart) {
-        Mock mock = mocks.get(StringEscapeUtils.escapeJavaScript(urlPart));
-        StringWriter writer = new StringWriter();
-        velocityContext.put(MOCK_IN_TEMPLATE, mock);
-        getCallCountTemplate.merge(velocityContext, writer);
-        Long result = (Long) jsExecutor.executeScript(writer.toString());
-        return result != null ? result.intValue() : 0;
-    }
-
-    @SuppressWarnings("unchecked")
-    public AjaxRequest getRequestFor(String urlPart) {
-        Mock mock = mocks.get(StringEscapeUtils.escapeJavaScript(urlPart));
-        StringWriter writer = new StringWriter();
-        velocityContext.put(MOCK_IN_TEMPLATE, mock);
-        getAjaxRequestTemplate.merge(velocityContext, writer);
-        List<String> jsList = (List<String>) jsExecutor.executeScript(writer.toString());
-        return new AjaxRequest(jsList);
+    public void release() {
+        jsExecutor.executeScript(JsMaker.releaseJs());
     }
 }

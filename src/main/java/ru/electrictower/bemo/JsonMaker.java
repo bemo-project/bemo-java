@@ -1,51 +1,65 @@
 package ru.electrictower.bemo;
 
+import com.google.gson.Gson;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
- * Created by wizard.
+ * Created by v1-wizard on 2.5.16.
  */
-class BeMoConstants {
+class JsonMaker {
+    private static Gson gson = new Gson();
 
-    public final static String DEFAULT_X_HOOK_URL = "https://jpillora.com/xhook/dist/xhook.js";
-
-    // JS commands
-    public final static String JS_ENABLE_X_HOOK = "xhook.enable();";
-    public final static String JS_DISABLE_X_HOOK = "xhook.disable();";
-    public final static String JS_DESTROY_ALL_MOCKS = "xhook.destroy();";
-
-    static class Velocity {
-        // Velocity Configs
-        public static final Properties VELOCITY_PROPERTIES;
-
-        static {
-            VELOCITY_PROPERTIES = new Properties();
-            VELOCITY_PROPERTIES.setProperty("resource.loader", "file");
-            VELOCITY_PROPERTIES.setProperty(
-                    "file.resource.loader.class",
-                    "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"
-            );
-        }
-
-        // Templates
-        public static final String INJECT_MOCK_TEMPLATE = "inject_mock.vm";
-        public static final String CREATE_MOCKS_ON_PAGE_TEMPLATE = "create_mocks.vm";
-        public static final String GET_CALL_COUNT_TEMPLATE = "get_call_count.vm";
-        public static final String GET_AJAX_REQUEST_TEMPLATE = "get_ajax_request.vm";
-
-        //Variables
-        public static final String URL_TO_JS_MOCK = "url_to_mock";
-        public static final String MOCKS_IN_TEMPLATE = "mocks";
-        public static final String MOCK_IN_TEMPLATE = "mock";
+    static String initJson(String xHookScriptUrl) {
+        return gson.toJson(new InitJson(xHookScriptUrl));
     }
 
+    static String handlersJson(List<AbstractHandler> handlers) {
+        return null; //TODO
+    }
 
-    static class Ajax {
+    private static class InitJson {
 
+        private InitJson(String XHookScriptURL) {
+            this.XHookScriptURL = XHookScriptURL;
+        }
+
+        private String XHookScriptURL;
+    }
+
+    private static class HandlersJson {
+        private HandlersJson(List<Handler> handlers) {
+            this.handlers = handlers;
+        }
+
+        private List<Handler> handlers;
+    }
+
+    private static class Handler {
+        //TODO
+    }
+
+    private static class JsonRequest implements IRequest {
+        //TODO
+
+        public Object getBody() {
+            return null;
+        }
+
+        public int getStatus() {
+            return 0;
+        }
+
+        public Map<String, String> getHeaders() {
+            return null;
+        }
+    }
+
+    static class AjaxStatusMapping {
         //Mapping status codes with ajax status texts.
-        public final static Map<Integer, String> statusTextMap = new HashMap<Integer, String>();
+        final static Map<Integer, String> statusTextMap = new HashMap<Integer, String>();
 
         static {
             statusTextMap.put(100, "Continue");
@@ -105,6 +119,5 @@ class BeMoConstants {
             statusTextMap.put(507, "Variant Also Negotiates");
             statusTextMap.put(511, "Network Authentication Required");
         }
-
     }
 }

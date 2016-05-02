@@ -1,0 +1,15 @@
+var document = window.document,
+    head,
+    script,
+    bemoContext = JSON.parse('%s');
+
+if (window.xhook === void 0) {
+    head = document.getElementsByTagName('head').item(0);
+    script = document.createElement('script');
+
+    script.setAttribute('type', 'text/javascript');
+    script.setAttribute('async', false);
+    script.setAttribute('src', bemoContext.XHookScriptURL);
+
+    head.appendChild(script);
+}
