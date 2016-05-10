@@ -96,8 +96,7 @@ public class ValidatorCall extends AbstractCall {
 ```
 
 # Tech
-Bemo use [xhook](https://github.com/jpillora/xhook) to work.
-Bemo use [gson](https://github.com/google/gson) to work.
+Bemo use [xhook](https://github.com/jpillora/xhook) and [gson](https://github.com/google/gson)  to work.
 
 # Contributing
 Fill free to contribute!
