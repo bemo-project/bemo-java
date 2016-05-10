@@ -4,7 +4,7 @@
     <groupId>io.github.bemo_project</groupId>
     <artifactId>bemo</artifactId>
     <packaging>jar</packaging>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <name>bemo</name>
     <url>http://bemo-project.github.io/bemo-java/</url>
     <dependencies>
