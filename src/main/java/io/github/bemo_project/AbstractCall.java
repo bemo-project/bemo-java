@@ -5,7 +5,7 @@ import java.util.Map;
 /**
  * Created by v1-wizard on 30.4.16.
  */
-public abstract class AbstractCall implements Comparable<AbstractCall>{
+public abstract class AbstractCall {
 
     public abstract String getMethod();
 
@@ -53,10 +53,6 @@ public abstract class AbstractCall implements Comparable<AbstractCall>{
         }
 
         return true;
-    }
-
-    public int compareTo(AbstractCall o) {
-        return 0;
     }
 
     @Override

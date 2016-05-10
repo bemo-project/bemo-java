@@ -10,7 +10,7 @@ import java.util.List;
  * Created by v1-wizard on 30.4.16.
  */
 public class BeMo {
-    public final static String DEFAULT_X_HOOK_URL = "https://jpillora.com/xhook/dist/xhook.js";
+    public final static String DEFAULT_X_HOOK_URL = "//jpillora.com/xhook/dist/xhook.js";
 
     private JavascriptExecutor jsExecutor;
     private String xHookUrl;

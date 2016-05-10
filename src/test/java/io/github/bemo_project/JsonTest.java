@@ -1,48 +1,61 @@
 package io.github.bemo_project;
 
+import io.github.bemo_project.data.TestCall;
+import io.github.bemo_project.data.TestHandler;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * Created by v1-wizard on 2.5.16.
  */
 public class JsonTest {
 
-    class Handler extends AbstractHandler{
-
-        @Override
-        public Object getBody() {
-            return "{}";
-        }
-
-        @Override
-        public Map<String, String> getHeaders() {
-            return null;
-        }
-
-        @Override
-        public String getUrlPart() {
-            return "test";
-        }
-
-        @Override
-        public int getStatus() {
-            return 200;
-        }
+    @Test
+    public void verityInitJson() {
+        assertEquals(JsonMaker.init("test"), "{\"XHookScriptURL\":\"test\"}");
     }
 
     @Test
-    public void verity_init_json() {
-        System.out.println(JsonMaker.init("hui"));
-    }
-
-    @Test
-    public void verify_handlers_json() {
+    public void verifyHandlersJson() {
         List<AbstractHandler> handlers = new ArrayList<AbstractHandler>();
-        handlers.add(new Handler());
-        System.out.println(JsonMaker.handlers(handlers));
+        handlers.add(new TestHandler());
+        String handlersAsString = JsonMaker.handlers(handlers);
+        assertThat(handlersAsString, containsString("\"body\":\"{}\""));
+        assertThat(handlersAsString, containsString("\"statusText\":\"OK\""));
+        assertThat(handlersAsString, containsString("\"status\":200"));
+        assertThat(handlersAsString, containsString("\"body\":\"{}\""));
+    }
+
+    @Test
+    public void verifyMakeBodyFromCall() {
+        String bodyAsString = JsonMaker.makeBody(new TestCall());
+        assertEquals(bodyAsString, "{test}");
+    }
+
+    @Test
+    public void verifyDecodeCalls() {
+        String testDatum = "[{\"method\":\"POST\",\"url\":\"InputValidator?resource=SignUp\"," +
+                "\"headers\":{\"Content-type\":\"application/json\"},\"body\":\"" +
+                "{\\\"input01\\\":{\\\"Input\\\":\\\"GmailAddress\\\"," +
+                "\\\"GmailAddress\\\":\\\"aliaksei.boole\\\",\\\"FirstName\\\":\\\"\\\"," +
+                "\\\"LastName\\\":\\\"\\\"},\\\"Locale\\\":\\\"ru\\\"}\"}]";
+        List<AbstractCall> abstractCalls = JsonMaker.decodeCalls(testDatum);
+        assertThat(abstractCalls, hasSize(1));
+        assertThat(abstractCalls.get(0), notNullValue());
+    }
+
+    @Test
+    public void verifyHandler() {
+        String handlerAsString = JsonMaker.handler(new TestHandler());
+        assertThat(handlerAsString, containsString("\"body\":\"{}\""));
+        assertThat(handlerAsString, containsString("\"statusText\":\"OK\""));
+        assertThat(handlerAsString, containsString("\"status\":200"));
+        assertThat(handlerAsString, containsString("\"body\":\"{}\""));
     }
 }
