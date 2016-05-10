@@ -31,99 +31,105 @@
 <h3>
 <a id="example-usage" class="anchor" href="#example-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example usage:</h3>
 
-<div class="highlight highlight-source-java"><pre>    @<span class="pl-smi">Test</span>
-    <span class="pl-k">public</span> <span class="pl-k">void</span> testAddressErrorGoogleRegistration() {
-        open(<span class="pl-c1">GOOGLE_SIGN_UP_URL</span>);
-
-        <span class="pl-smi">GoogleValidatorResponse</span> gVResponse <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">GoogleValidatorResponse</span>();
-
-        <span class="pl-smi">BeMo</span> beMo <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">BeMo</span>(getWebDriver()); <span class="pl-c">// Create Bemo instance and setup WebDriver.</span>
-        beMo<span class="pl-k">.</span>mockFor(<span class="pl-c1">VALIDATOR_URL_PART</span>) <span class="pl-c">// Constract your mock for url pattern.</span>
-                .with()
-                .body(gson<span class="pl-k">.</span>toJson(gVResponse))  <span class="pl-c">// Set response body.</span>
-                .status(<span class="pl-c1">200</span>); <span class="pl-c">// Set http response status.</span>
-        beMo<span class="pl-k">.</span>inject()<span class="pl-k">.</span>enable(); <span class="pl-c">// Inject xhook to page and enable mock.</span>
-
-        $(<span class="pl-c1">GMAIL_ADDRESS_INPUT</span>)<span class="pl-k">.</span>setValue(<span class="pl-s"><span class="pl-pds">"</span>aliaksei.boole<span class="pl-pds">"</span></span>);
-        $(<span class="pl-c1">SUBMIT_BUTTON</span>)<span class="pl-k">.</span>click();
-
-        $(<span class="pl-c1">ERROR_MESSAGE</span>)<span class="pl-k">.</span>shouldHave(text(<span class="pl-s"><span class="pl-pds">"</span>It's work!<span class="pl-pds">"</span></span>));
-        assertEquals(<span class="pl-c1">1</span>, beMo<span class="pl-k">.</span>getCallCountFor(<span class="pl-c1">VALIDATOR_URL_PART</span>));
-    }</pre></div>
-
-<h3>
-<a id="main-bemo-api" class="anchor" href="#main-bemo-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Main Bemo API</h3>
-
 <ul>
-<li>Setup <a href="https://github.com/jpillora/xhook">xhook</a> on page:</li>
+<li>Test Class</li>
 </ul>
 
-<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-smi">BeMo</span> inject()</pre></div>
+<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">DemoTests</span> {
+    <span class="pl-k">private</span> <span class="pl-smi">BeMo</span> bemo;
+    <span class="pl-k">private</span> <span class="pl-smi">ValidatorHandler</span> validatorHandler;
+
+    <span class="pl-k">@BeforeMethod</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">beforeMethod</span>() {
+        open(<span class="pl-s"><span class="pl-pds">"</span>https://accounts.google.com/SignUp<span class="pl-pds">"</span></span>);
+
+        bemo <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">BeMo</span>(getWebDriver()); <span class="pl-c">// Make BeMo instance.</span>
+        validatorHandler <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">ValidatorHandler</span>(); <span class="pl-c">//Make Bemo Handler.</span>
+    }
+
+    <span class="pl-k">@AfterMethod</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">afterMethod</span>() {
+            bemo<span class="pl-k">.</span>release(); <span class="pl-c">//Disable and destroy xhook.</span>
+    }
+
+    <span class="pl-k">@Test</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">testAddressErrorGoogleRegistration</span>() {
+        bemo<span class="pl-k">.</span>addHandler(validatorHandler)<span class="pl-k">.</span>inject(); <span class="pl-c">// Register Handler and inject to xhook.</span>
+
+        $(<span class="pl-smi">GoogleRegistrationPage</span><span class="pl-c1"><span class="pl-k">.</span>GMAIL_ADDRESS_INPUT</span>)<span class="pl-k">.</span>setValue(<span class="pl-s"><span class="pl-pds">"</span>aliaksei.boole<span class="pl-pds">"</span></span>);
+        $(<span class="pl-smi">GoogleRegistrationPage</span><span class="pl-c1"><span class="pl-k">.</span>SUBMIT_BUTTON</span>)<span class="pl-k">.</span>click();
+
+        $(<span class="pl-smi">GoogleRegistrationPage</span><span class="pl-c1"><span class="pl-k">.</span>ERROR_MESSAGE</span>)<span class="pl-k">.</span>shouldHave(text(<span class="pl-s"><span class="pl-pds">"</span>It's work.<span class="pl-pds">"</span></span>));
+
+        validatorHandler<span class="pl-k">.</span>assertCallCount(<span class="pl-c1">1</span>); <span class="pl-c">// Verify that handler was called only once.</span>
+        validatorHandler<span class="pl-k">.</span>assertCalledOnceWith(<span class="pl-k">new</span> <span class="pl-smi">ValidatorCall</span>()); <span class="pl-c">// Verify that handler was called with this call. </span>
+    }
+}</pre></div>
 
 <ul>
-<li>Enable your prepared mocks:</li>
+<li>ValidatorHandler</li>
 </ul>
 
-<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">void</span> enable()</pre></div>
+<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">ValidatorHandler</span> <span class="pl-k">extends</span> <span class="pl-e">AbstractHandler</span> {
+
+    <span class="pl-k">public</span> <span class="pl-smi">ValidatorResponseBody</span> responseBody <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">ValidatorResponseBody</span>();
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-smi">Object</span> <span class="pl-en">getBody</span>() {
+        <span class="pl-k">return</span> responseBody; <span class="pl-c">// If string than use as is. If Object than will transform to Json via Gson.</span>
+    }
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">String</span>&gt;</span> <span class="pl-en">getHeaders</span>() {
+        <span class="pl-k">return</span> <span class="pl-c1">null</span>; <span class="pl-c">// Null was ignoring.</span>
+    }
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getUrlPart</span>() {
+        <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">"</span>InputValidator<span class="pl-pds">"</span></span>; <span class="pl-c">// This is part of url for setup handler.</span>
+    }
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">getStatus</span>() {
+        <span class="pl-k">return</span> <span class="pl-c1">200</span>; <span class="pl-c">// Http status code.</span>
+    }
+}</pre></div>
 
 <ul>
-<li>Disable all mocks:</li>
+<li>ValidatorCall</li>
 </ul>
 
-<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">void</span> disable()</pre></div>
+<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">ValidatorCall</span> <span class="pl-k">extends</span> <span class="pl-e">AbstractCall</span> {
+    <span class="pl-k">public</span> <span class="pl-smi">ValidatorRequestBody</span> body <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">ValidatorRequestBody</span>();
 
-<ul>
-<li>Construct mock for url pattern:</li>
-</ul>
+    <span class="pl-k">public</span> <span class="pl-en">ValidatorCall</span>() {
+    }
 
-<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-smi">IMockBuilder</span> mockFor(<span class="pl-smi">String</span> urlPart)</pre></div>
+    <span class="pl-k">public</span> <span class="pl-en">ValidatorCall</span>(<span class="pl-smi">String</span> <span class="pl-v">gmail_address</span>) {
+        body<span class="pl-k">.</span>input01<span class="pl-k">.</span>put(<span class="pl-s"><span class="pl-pds">"</span>GmailAddress<span class="pl-pds">"</span></span>, gmail_address);
+    }
 
-<ul>
-<li>Get count of mock calls for url pattern:</li>
-</ul>
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getMethod</span>() {
+        <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">"</span>POST<span class="pl-pds">"</span></span>; <span class="pl-c">// Http method.</span>
+    }
 
-<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">int</span> getCallCountFor(<span class="pl-smi">String</span> urlPart)</pre></div>
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getUrl</span>() {
+        <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">"</span>InputValidator?resource=SignUp<span class="pl-pds">"</span></span>; <span class="pl-c">// Request url.</span>
+    }
 
-<ul>
-<li>Get last ajax request for url pattern (<strong>NEW!</strong>):</li>
-</ul>
+    <span class="pl-k">public</span> <span class="pl-smi">Object</span> <span class="pl-en">getBody</span>() {
+        <span class="pl-k">return</span> body; <span class="pl-c">// Request body.</span>
+    }
 
-<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-smi">AjaxRequest</span> getRequestFor(<span class="pl-smi">String</span> urlPart)</pre></div>
-
-<h3>
-<a id="mock-builder-api" class="anchor" href="#mock-builder-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Mock Builder API</h3>
-
-<ul>
-<li>Construct your mock:</li>
-</ul>
-
-<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-smi">IResponseBuilder</span> with()</pre></div>
-
-<ul>
-<li>Construct your mock with delay (use when you want simulate long request execution):</li>
-</ul>
-
-<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-smi">IResponseBuilder</span> withDelay(<span class="pl-k">int</span> seconds); <span class="pl-c">// throw new NotImplementedException("Coming soon...");</span></pre></div>
-
-<h3>
-<a id="response-builder-api" class="anchor" href="#response-builder-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Response Builder API</h3>
-
-<ul>
-<li>Set fake response http status to mock:</li>
-</ul>
-
-<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-smi">IResponseBuilder</span> status(<span class="pl-k">int</span> status);</pre></div>
-
-<ul>
-<li>Set fake response http body to mock:</li>
-</ul>
-
-<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-smi">IResponseBuilder</span> body(<span class="pl-smi">String</span> body);</pre></div>
+    <span class="pl-k">public</span> <span class="pl-k">Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">String</span>&gt;</span> <span class="pl-en">getHeaders</span>() {
+        <span class="pl-k">return</span> <span class="pl-c1">null</span>; <span class="pl-c">// Null will be ignore in verification.</span>
+    }
+}</pre></div>
 
 <h1>
 <a id="tech" class="anchor" href="#tech" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Tech</h1>
 
-<p>Bemo use <a href="https://github.com/jpillora/xhook">xhook</a> to work. </p>
+<p>Bemo use <a href="https://github.com/jpillora/xhook">xhook</a> and <a href="https://github.com/google/gson">gson</a>  to work.</p>
 
 <h1>
 <a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributing</h1>
