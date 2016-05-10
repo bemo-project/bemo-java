@@ -1,4 +1,4 @@
-# Bemo ![Build Status](https://travis-ci.org/bemo-project/bemo-java.svg?branch=master) [![Code Health](https://landscape.io/github/bemo-project/bemo-java/master/landscape.svg?style=flat)](https://landscape.io/github/bemo-project/bemo-java/master)
+# Bemo ![Build Status](https://travis-ci.org/bemo-project/bemo-java.svg?branch=master) [![Code Health](https://landscape.io/github/bemo-project/bemo-java/master/landscape.svg?style=flat)](https://landscape.io/github/bemo-project/bemo-java/master) [![Requirements Status](https://requires.io/github/bemo-project/bemo-java/requirements.svg?branch=master)](https://requires.io/github/bemo-project/bemo-java/requirements/?branch=master)
 Bemo(back-end mock) - it's simple way to mock your back-end from webdriver UI tests.
 
 > WARNING: It's framework prototype. Use at your own risk.
