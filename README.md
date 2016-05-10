@@ -5,76 +5,98 @@ Bemo(back-end mock) - it's simple way to mock your back-end from webdriver UI te
 
 
 ### Example usage:
+- Test Class
 ```java
+public class DemoTests {
+    private BeMo bemo;
+    private ValidatorHandler validatorHandler;
+
+    @BeforeMethod
+    public void beforeMethod() {
+        open("https://accounts.google.com/SignUp");
+
+        bemo = new BeMo(getWebDriver()); // Make BeMo instance.
+        validatorHandler = new ValidatorHandler(); //Make Bemo Handler.
+    }
+
+    @AfterMethod
+    public void afterMethod() {
+            bemo.release(); //Disable and destroy xhook.
+    }
+
     @Test
     public void testAddressErrorGoogleRegistration() {
-        open(GOOGLE_SIGN_UP_URL);
+        bemo.addHandler(validatorHandler).inject(); // Register Handler and inject to xhook.
 
-        GoogleValidatorResponse gVResponse = new GoogleValidatorResponse();
+        $(GoogleRegistrationPage.GMAIL_ADDRESS_INPUT).setValue("aliaksei.boole");
+        $(GoogleRegistrationPage.SUBMIT_BUTTON).click();
 
-        BeMo beMo = new BeMo(getWebDriver()); // Create Bemo instance and setup WebDriver.
-        beMo.mockFor(VALIDATOR_URL_PART) // Constract your mock for url pattern.
-                .with()
-                .body(gson.toJson(gVResponse))  // Set response body.
-                .status(200); // Set http response status.
-        beMo.inject().enable(); // Inject xhook to page and enable mock.
+        $(GoogleRegistrationPage.ERROR_MESSAGE).shouldHave(text("It's work."));
 
-        $(GMAIL_ADDRESS_INPUT).setValue("aliaksei.boole");
-        $(SUBMIT_BUTTON).click();
-
-        $(ERROR_MESSAGE).shouldHave(text("It's work!"));
-        assertEquals(1, beMo.getCallCountFor(VALIDATOR_URL_PART));
+        validatorHandler.assertCallCount(1); // Verify that handler was called only once.
+        validatorHandler.assertCalledOnceWith(new ValidatorCall()); // Verify that handler was called with this call. 
     }
+}
 ```
+- ValidatorHandler
+```java
+public class ValidatorHandler extends AbstractHandler {
 
-### Main Bemo API
-- Setup [xhook](https://github.com/jpillora/xhook) on page:
-```java
-public BeMo inject()
-```
-- Enable your prepared mocks:
-```java
-public void enable()
-```
-- Disable all mocks:
-```java
-public void disable()
-```
-- Construct mock for url pattern:
-```java
-public IMockBuilder mockFor(String urlPart)
-```
-- Get count of mock calls for url pattern:
-```java
-public int getCallCountFor(String urlPart)
-```
-- Get last ajax request for url pattern (**NEW!**):
-```java
-public AjaxRequest getRequestFor(String urlPart)
-```
+    public ValidatorResponseBody responseBody = new ValidatorResponseBody();
 
-### Mock Builder API
-- Construct your mock:
-```java
-public IResponseBuilder with()
-```
-- Construct your mock with delay (use when you want simulate long request execution):
-```java
-public IResponseBuilder withDelay(int seconds); // throw new NotImplementedException("Coming soon...");
-```
+    @Override
+    public Object getBody() {
+        return responseBody; // If string than use as is. If Object than will transform to Json via Gson.
+    }
 
-### Response Builder API
-- Set fake response http status to mock:
-```java
-public IResponseBuilder status(int status);
+    @Override
+    public Map<String, String> getHeaders() {
+        return null; // Null was ignoring.
+    }
+
+    @Override
+    public String getUrlPart() {
+        return "InputValidator"; // This is part of url for setup handler.
+    }
+
+    @Override
+    public int getStatus() {
+        return 200; // Http status code.
+    }
+}
 ```
-- Set fake response http body to mock:
+- ValidatorCall
 ```java
-public IResponseBuilder body(String body);
+public class ValidatorCall extends AbstractCall {
+    public ValidatorRequestBody body = new ValidatorRequestBody();
+
+    public ValidatorCall() {
+    }
+
+    public ValidatorCall(String gmail_address) {
+        body.input01.put("GmailAddress", gmail_address);
+    }
+
+    public String getMethod() {
+        return "POST"; // Http method.
+    }
+
+    public String getUrl() {
+        return "InputValidator?resource=SignUp"; // Request url.
+    }
+
+    public Object getBody() {
+        return body; // Request body.
+    }
+
+    public Map<String, String> getHeaders() {
+        return null; // Null will be ignore in verification.
+    }
+}
 ```
 
 # Tech
-Bemo use [xhook](https://github.com/jpillora/xhook) to work. 
+Bemo use [xhook](https://github.com/jpillora/xhook) and [gson](https://github.com/google/gson)  to work.
 
 # Contributing
 Fill free to contribute!

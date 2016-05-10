@@ -1,0 +1,15 @@
+var bemoHandlers = window.bemoHandlers,
+    handler = %s;
+    bemoHandler = bemoHandlers[handler.uid],
+    callRequests = [];
+
+bemoHandler.callRequests.forEach(function(request) {
+    callRequests.push({
+        method: request.method,
+        url: request.url,
+        headers: request.headers,
+        body: request.body
+    });
+});
+
+return JSON.stringify(callRequests);
