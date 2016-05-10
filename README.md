@@ -3,6 +3,17 @@ Bemo(back-end mock) - it's simple way to mock your back-end from webdriver UI te
 
 > WARNING: It's framework prototype. Use at your own risk.
 
+## Installation
+
+Download bemo for java:
+
+    $ git clone https://github.com/bemo-project/bemo-java.git
+
+Build maven artifact:
+
+    $ mvn clean install
+
+Enjoy!
 
 ### Example usage:
 - Test Class
