@@ -34,9 +34,7 @@ public class DemoTests {
 
     @AfterMethod
     public void afterMethod() {
-        if (bemo != null) {
             bemo.release();
-        }
     }
 
     @Test

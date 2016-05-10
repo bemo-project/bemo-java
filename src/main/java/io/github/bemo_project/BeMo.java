@@ -40,7 +40,6 @@ public class BeMo {
     }
 
     public void release() {
-        handlers.clear();
         jsExecutor.executeScript(JsMaker.release());
     }
 }
