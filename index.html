@@ -20,13 +20,29 @@
 
     <section class="main-content">
       <h1>
-<a id="bemo" class="anchor" href="#bemo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bemo</h1>
+<a id="bemo--" class="anchor" href="#bemo--" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bemo <img src="https://travis-ci.org/bemo-project/bemo-java.svg?branch=master" alt="Build Status"> <a href="https://landscape.io/github/bemo-project/bemo-java/master"><img src="https://landscape.io/github/bemo-project/bemo-java/master/landscape.svg?style=flat" alt="Code Health"></a>
+</h1>
 
 <p>Bemo(back-end mock) - it's simple way to mock your back-end from webdriver UI tests.</p>
 
 <blockquote>
 <p>WARNING: It's framework prototype. Use at your own risk.</p>
 </blockquote>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Download bemo for java:</p>
+
+<pre><code>$ git clone https://github.com/bemo-project/bemo-java.git
+</code></pre>
+
+<p>Build maven artifact:</p>
+
+<pre><code>$ mvn clean install
+</code></pre>
+
+<p>Enjoy!</p>
 
 <h3>
 <a id="example-usage" class="anchor" href="#example-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example usage:</h3>
@@ -109,18 +125,22 @@
         body<span class="pl-k">.</span>input01<span class="pl-k">.</span>put(<span class="pl-s"><span class="pl-pds">"</span>GmailAddress<span class="pl-pds">"</span></span>, gmail_address);
     }
 
+    <span class="pl-k">@Override</span>
     <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getMethod</span>() {
         <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">"</span>POST<span class="pl-pds">"</span></span>; <span class="pl-c">// Http method.</span>
     }
 
+    <span class="pl-k">@Override</span>
     <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getUrl</span>() {
         <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">"</span>InputValidator?resource=SignUp<span class="pl-pds">"</span></span>; <span class="pl-c">// Request url.</span>
     }
 
+    <span class="pl-k">@Override</span>
     <span class="pl-k">public</span> <span class="pl-smi">Object</span> <span class="pl-en">getBody</span>() {
         <span class="pl-k">return</span> body; <span class="pl-c">// Request body.</span>
     }
 
+    <span class="pl-k">@Override</span>
     <span class="pl-k">public</span> <span class="pl-k">Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">String</span>&gt;</span> <span class="pl-en">getHeaders</span>() {
         <span class="pl-k">return</span> <span class="pl-c1">null</span>; <span class="pl-c">// Null will be ignore in verification.</span>
     }
