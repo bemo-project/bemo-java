@@ -76,19 +76,23 @@ public class ValidatorCall extends AbstractCall {
     public ValidatorCall(String gmail_address) {
         body.input01.put("GmailAddress", gmail_address);
     }
-
+    
+    @Override
     public String getMethod() {
         return "POST"; // Http method.
     }
-
+    
+    @Override
     public String getUrl() {
         return "InputValidator?resource=SignUp"; // Request url.
     }
-
+    
+    @Override
     public Object getBody() {
         return body; // Request body.
     }
-
+    
+    @Override
     public Map<String, String> getHeaders() {
         return null; // Null will be ignore in verification.
     }
