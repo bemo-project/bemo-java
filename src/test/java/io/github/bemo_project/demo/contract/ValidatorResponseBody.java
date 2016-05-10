@@ -1,4 +1,4 @@
-package ru.electrictower.bemo.demonstration.contract;
+package io.github.bemo_project.demo.contract;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Created by v1_wizard.
  */
-public class GoogleValidatorResponse {
+public class ValidatorResponseBody {
     public Input01 input01 = new Input01();
     public String Locale = "ru";
 

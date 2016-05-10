@@ -1,14 +1,14 @@
-package ru.electrictower.bemo.demonstration.contract;
+package io.github.bemo_project.demo.contract;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * Created by v1_wizard.
  */
-public class GoogleValidatorRequest {
+public class ValidatorRequestBody {
 
-    public Map<String, String> input01 = new HashMap<String, String>();
+    public Map<String, String> input01 = new LinkedHashMap<String, String>();
     public String Locale = "ru";
 
     {

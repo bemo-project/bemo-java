@@ -1,4 +1,4 @@
-package ru.electrictower.bemo;
+package io.github.bemo_project;
 
 import org.testng.annotations.Test;
 
@@ -12,7 +12,7 @@ public class TemplatesTests {
 
     @Test
     public void verifyTemplatesLoaded() {
-        assertNotNull(JsMaker.enableJs());
+        assertNotNull(JsMaker.enable());
     }
 
 

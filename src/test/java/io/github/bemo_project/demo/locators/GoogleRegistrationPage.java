@@ -1,4 +1,4 @@
-package ru.electrictower.bemo.demonstration.locators;
+package io.github.bemo_project.demo.locators;
 
 import org.openqa.selenium.By;
 

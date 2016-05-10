@@ -2,7 +2,7 @@ var xhook = window.xhook,
     urlpart,
     response,
     bemoHandlers,
-    bemoContext = JSON.parse('%s');
+    bemoContext = %s;
 
 // Destroy all previously added handlers if any
 xhook.destroy();
@@ -25,7 +25,7 @@ bemoContext.handlers.forEach(function(handler) {
             response.status = handler.status;
             response.statusText = handler.statusText;
             response.headers = handler.headers;
-            response.text = JSON.stringify(handler.body);
+            response.text = handler.body;
 
             return response;
         }
