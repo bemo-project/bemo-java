@@ -13,6 +13,16 @@ Build maven artifact:
 
     $ mvn clean install
 
+Add dependency to your project:
+
+ ```
+        <dependency>
+            <groupId>io.github.bemo_project</groupId>
+            <artifactId>bemo</artifactId>
+            <version>0.0.2</version>
+        </dependency> 
+```
+
 Enjoy!
 
 ### Example usage:
